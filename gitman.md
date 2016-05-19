@@ -3,7 +3,8 @@
 # git push file
 git add  README.md
 git commit -m "first commit"
-git remote add origin https://github.com/zenway33/pythonlib.git git push -u origin master
+git remote add origin https://github.com/zenway33/pythonlib.git 
+git push -u origin master
 ```
 ```bash
 # git del file
