@@ -77,6 +77,22 @@ L = ['Bart', 'Lisa', 'Adam']
 for name in L:
     print('Helo %s!' % name)
 
+## for 迭代用户法
+迭代：
+
+>>> [x * x for x in range(1, 11)]
+[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+
+>>> [m + n for m in 'ABC' for n in 'XYZ']
+['AX', 'AY', 'AZ', 'BX', 'BY', 'BZ', 'CX', 'CY', 'CZ']
+
+>>> d = {'x': 'A', 'y': 'B', 'z': 'C' }
+>>> for k, v in d.items():
+...     print(k, '=', v)
+...
+y = B
+x = A
+z = C
 
 ## **kv 关键词参数：
 def person(name, age, **kw):
