@@ -106,3 +106,26 @@ print(person('Bob', 35, city='Beijing'))
 ## *args是可变参数，args接收的是一个tuple；
 ## **kw是关键字参数，kw接收的是一个dict。
 ## 使用*args和**kw是Python的习惯写法，当然也可以用其他参数名，但最好使用习惯用法。
+
+## 只打印字母并转化成小写:
+L1 = ['Hello','World',18,'Apple',None]
+L2 = [s.lower() for s in L1 if isinstance(s,str)]
+print(L2)
+
+map/reduce/lambda/filter/sorted
+求 4个数的乘积：
+
+from functools import reduce
+def prod(L):
+        return reduce(lambda x,y:x*y, L)
+print('3 * 5 * 7 * 9 =',prod([3,5,7,9]))
+
+print(prod([5,6,7,8]))
+
+删除偶数，保留奇数：
+def is_odd(n):
+    return n % 2 == 1
+
+L = list(filter(is_odd, [1, 2, 4, 5, 6, 9, 10, 15]))
+
+print(L)
