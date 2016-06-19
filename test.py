@@ -4,6 +4,7 @@ __author__ = 'zenway33'
 
 from bs4 import BeautifulSoup
 import requests
+from multiprocessing import Pool
 import time
 import random
 import re
@@ -22,40 +23,80 @@ headers = {
 
 web_url = 'http://www.dytt8.net/'
 wb_data = requests.get(web_url,headers=headers)
-wb_data.encoding = 'gb2312'
+wb_data.encoding = 'gb2312' #保证不乱码
 soup = BeautifulSoup(wb_data.text, 'lxml')
 #print(soup.prettify())
 #header > div > div.bd2 > div.bd3 > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(2) > div.title_all > p > strong
-titles = soup.select('div.title_all > p > strong')
-#header > div > div.bd2 > div.bd3 > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(2) > div.co_content8 > ul > table > tbody > tr:nth-child(4) > td:nth-child(1) > a:nth-child(2)
 #<a href="/html/gndy/dyzz/20160610/51200.html">2016年传记喜剧《飞鹰艾迪》BD中英双字幕</a>
 links = [a.attrs.get('href') for a in soup.select('a[href^=/html/gndy/dyzz/2016]')]
-#header > div > div.bd2 > div.bd3 > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(2) > div.co_content8 > ul > table > tbody > tr:nth-child(4) > td:nth-child(1) > a:nth-child(2)
-#header > div > div.bd2 > div.bd3 > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(2) > div.title_all
-#moive_names = soup.select('tr > td > a')
-#header > div > div.bd2 > div.bd3 > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(2) > div.co_content8 > ul > table > tbody
-moive_names = soup.select('div.co_content8')
-print(moive_names)
-#print(titles)
-print(links)
-
-
-for moive_name in moive_names:
-    moive_name = moive_name.get_text()
-    print(moive_name)
-
-
-'''
-for moive_name,link  in zip(moive_names,links):
-    data = {
-        'moive_name' : moive_name.get_text(),
-        'link' : link
-    }
-    print(data)
-'''
+moive_names = soup.select('div > ul > tr')
 
 #print(links)
+#link = 'http://www.dytt8.net/html/gndy/dyzz/20160617/51247.html'
+
+root_url = 'http://www.dytt8.net'
+
+# get vide page urls  list
+def get_video_page_url():
+    urllist=[] #定义一个列表
+    for  link in links:
+        link = root_url +link
+        urllist.append(link)
+    return urllist
+
+urllists = get_video_page_url()
+#print(urllists)
+
+
 '''
-for text in hot_moives:
-    print(text.decode('utf-8').encode('gbk'))
+    for moive_name,link  in zip(moive_names,links):
+        data = {
+            'moive_name' : moive_name.get_text().strip('\n'),
+            'link' : 'http://www.dytt8.net' + link
+         }
+        #print(data)
+        return data['link']
 '''
+
+#get video download url
+def get_video_data(link):
+    wb_data = requests.get(link, headers=headers)
+    wb_data.encoding = 'gb2312'
+    soup = BeautifulSoup(wb_data.text, 'lxml')
+    #thunder = soup.select('tr > td > a')[0].get_text()
+    #print(thunder)
+    return soup.select('tr > td > a')[0].get_text()
+
+
+
+#get_video_page_urls()
+
+def show_video_stats():
+    pool = Pool(10)
+    video_page_urls = urllists
+    #for video_page_url  in video_page_urls:
+         #print(get_video_data(video_page_url))
+    results = pool.map(get_video_data, video_page_urls)
+    print(results)
+
+
+
+show_video_stats()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
